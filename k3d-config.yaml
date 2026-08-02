@@ -1,0 +1,29 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: k3s-whoami-homelab
+servers: 1
+agents: 1
+options:
+  k3s:
+    extraArgs:
+      # Enable Traefik Ingress built into K3s
+      - arg: --disable=traefik
+        value: "false"
+registries:
+  # China docker hub mirror to avoid timeout
+  create:
+    name: docker-mirror
+    proxy:
+      remote: docker.io
+      registry:
+        mirrors:
+          docker.io:
+            endpoint:
+              - "https://docker.mirrors.ustc.edu.cn"
+ports:
+  - port: 8080:80
+    nodePort: 30080
+    loadBalancerIP: 0.0.0.0
+  - port: 8443:443
+    nodePort: 30443
