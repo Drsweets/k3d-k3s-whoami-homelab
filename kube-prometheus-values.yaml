@@ -3,6 +3,7 @@ grafana:
   persistence:
     enabled: false
   adminPassword: Homelab@123
+
 prometheus:
   prometheusSpec:
     retention: 7d
