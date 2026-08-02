@@ -1,17 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
+
 metadata:
   name: homelab-gitops
   namespace: argocd
+
 spec:
   project: default
+
   source:
-    repoURL: https://github.com/YOUR_USERNAME/k3d-gitops-manifests.git
+    repoURL: https://github.com/Drsweets/k3d-k3s-whoami-homelab.git
     targetRevision: HEAD
-    path: whoami-app
+    path: manifests
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: whoami-app
+    namespace: homelab-demo
+
   syncPolicy:
     automated:
       prune: true
