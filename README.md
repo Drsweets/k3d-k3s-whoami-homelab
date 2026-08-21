@@ -26,21 +26,19 @@ This repo follows a **stable, manual workflow**: provision the cluster, then `ku
 
 ```
 k3d-k3s-whoami-homelab/
-├── README.md                 # This file
-├── 00-k3d-config.yaml        # k3d cluster definition (1 server + 1 agent)
-├── 01-namespace.yaml         # Creates the homelab-demo namespace
-├── 02-whoami-deployment.yaml # Reference only: Deployment (replicas: 2, whoami-svc)
-├── 03-whoami-service.yaml    # Reference only: Service (name: whoami-svc)
-├── 04-ingress.yaml           # Reference only: Ingress (host: homelab.local)
-└── 05-whoami.yaml            # RECOMMENDED: combined Deployment + Service + Ingress
+├── README.md            # This file
+├── 00-k3d-config.yaml    # k3d cluster definition (1 server + 1 agent)
+├── 01-namespace.yaml     # Creates the homelab-demo namespace
+└── 02-whoami.yaml        # Combined Deployment + Service + Ingress for the whoami demo app
 ```
 
-**Which manifests should I apply?**
-Use `05-whoami.yaml`. It's a single, self-contained file with consistent naming (Service `whoami`, host `whoami.local`, namespace `homelab-demo`).
+Only three manifests are needed, applied in numeric order:
 
-The split files `02`–`04` use different naming conventions (`whoami-svc`, `homelab.local`) and exist purely as reference examples. **Do not apply both sets** — they'll create conflicting resources in the cluster.
+1. `00-k3d-config.yaml` — used by `k3d cluster create` to stand up the cluster itself (not applied with `kubectl`)
+2. `01-namespace.yaml` — creates the `homelab-demo` namespace
+3. `02-whoami.yaml` — a single, self-contained manifest defining the `whoami` Deployment (1 replica, image `traefik/whoami`), Service (`whoami`, port 80), and Ingress (host `whoami.local`)
 
----
+--
 
 ## Prerequisites
 
@@ -168,7 +166,7 @@ All resources are hard-coded to the `homelab-demo` namespace. Create the namespa
 
 ```bash
 kubectl apply -f 01-namespace.yaml
-kubectl apply -f 05-whoami.yaml
+kubectl apply -f 02-whoami.yaml
 ```
 
 Verify everything came up cleanly:
@@ -180,7 +178,7 @@ kubectl get ingress -n homelab-demo
 kubectl get endpoints -n homelab-demo
 ```
 
-> `kubectl get endpoints` is the key check — it confirms the Service is actually selecting and routing to the backend whoami pods.
+> `kubectl get endpoints` is the key check — it confirms the Service is actually selecting and routing to the backend whoami pod.
 
 **Optional — set the namespace as your default context** so you don't need `-n homelab-demo` on every command:
 
@@ -248,7 +246,7 @@ docker exec -it $(docker ps | grep k3d-k3s-homelab-server-0 | awk '{print $1}') 
 ### Option A — Remove only the whoami workload (keep the cluster running)
 
 ```bash
-kubectl delete -f 05-whoami.yaml
+kubectl delete -f 02-whoami.yaml
 kubectl delete -f 01-namespace.yaml
 ```
 
