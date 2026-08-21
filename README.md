@@ -2,7 +2,7 @@
 
 A lightweight, multi-node Kubernetes homelab built with **K3d (K3s running inside Docker)**, deployed on an Ubuntu VM hosted in Proxmox.
 
-This repo follows a **stable, manual workflow**: provision the cluster, then `kubectl apply` a simple `whoami` demo workload. No GitOps, no monitoring stack — just a reliable, repeatable setup for lab work and quick demos (e.g. LinkedIn posts).
+This repo follows a **stable, manual workflow**: provision the cluster, then `kubectl apply` a simple `whoami` demo workload. 
 
 > **Target environment:** Proxmox Ubuntu 24.04 VM with Docker pre-installed.
 
